@@ -122,7 +122,7 @@ export function UploadDropzone({ accept, maxSizeMB = MAX_SIZE_MB, onSelectFile, 
         type="file"
         accept="image/*"
         capture="environment"
-        className="hidden"
+        style={{ display: "none" }}
         onChange={handleFileChange}
       />
     </div>
