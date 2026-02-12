@@ -67,9 +67,16 @@ export function UploadDropzone({ accept, maxSizeMB = MAX_SIZE_MB, onSelectFile, 
     [validateAndSelect]
   );
 
-  const startCamera = async () => {
+  const openNativeCameraInput = useCallback(() => {
+    if (cameraInputRef.current) {
+      cameraInputRef.current.value = "";
+      cameraInputRef.current.click();
+    }
+  }, []);
+
+  const startCamera = useCallback(async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
+      const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "environment" } 
       });
       if (videoRef.current) {
@@ -78,23 +85,39 @@ export function UploadDropzone({ accept, maxSizeMB = MAX_SIZE_MB, onSelectFile, 
       }
     } catch (err) {
       console.error("Error accessing camera:", err);
-      toast.error("카메라에 접근할 수 없습니다. 권한을 확인해 주세요.");
+      const isPermissionError = err instanceof DOMException
+        && (err.name === "NotAllowedError" || err.name === "SecurityError");
+
+      toast.error(
+        isPermissionError
+          ? "카메라 권한이 거부되었습니다. 브라우저 설정에서 카메라 권한을 허용해 주세요."
+          : "카메라를 열 수 없습니다. 기본 업로드를 사용해 주세요."
+      );
+
+      if (!isPermissionError) {
+        openNativeCameraInput();
+      }
       setIsCameraOpen(false);
     }
-  };
+  }, [openNativeCameraInput]);
 
-  const stopCamera = () => {
+  const stopCamera = useCallback(() => {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());
       streamRef.current = null;
     }
     setIsCameraOpen(false);
-  };
+  }, []);
 
   const capturePhoto = () => {
     if (videoRef.current && canvasRef.current) {
       const video = videoRef.current;
       const canvas = canvasRef.current;
+
+      if (!video.videoWidth || !video.videoHeight) {
+        toast.error("카메라 준비 중입니다. 잠시 후 다시 시도해 주세요.");
+        return;
+      }
       
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
@@ -115,28 +138,33 @@ export function UploadDropzone({ accept, maxSizeMB = MAX_SIZE_MB, onSelectFile, 
   };
 
   const handleCameraClick = () => {
-    // Check if mobile device
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    
-    if (isMobile) {
-      cameraInputRef.current?.click();
-    } else {
+    const canUseWebCamera = typeof window !== "undefined" 
+      && window.isSecureContext
+      && !!navigator.mediaDevices?.getUserMedia;
+
+    if (canUseWebCamera) {
       setIsCameraOpen(true);
+      return;
     }
+
+    openNativeCameraInput();
   };
 
   // Effect to start camera when modal opens
   useEffect(() => {
-    if (isCameraOpen) {
-      startCamera();
-    } else {
-      return () => {
-        if (streamRef.current) {
-          streamRef.current.getTracks().forEach(track => track.stop());
-        }
-      };
+    if (!isCameraOpen) {
+      return;
     }
-  }, [isCameraOpen]);
+
+    void startCamera();
+
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current = null;
+      }
+    };
+  }, [isCameraOpen, startCamera]);
 
   if (preview && !loading) {
     return (
