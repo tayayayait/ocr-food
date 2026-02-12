@@ -1,0 +1,100 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+@import url("https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Neutral */
+    --background: 210 40% 98.8%;
+    --foreground: 222 47% 11.2%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11.2%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11.2%;
+
+    /* Primary Mint */
+    --primary: 174 72% 40%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary Blue */
+    --secondary: 199 89% 48%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215 25% 40%;
+
+    --accent: 199 89% 48%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 213 27% 84%;
+    --input: 213 27% 84%;
+    --ring: 174 72% 40%;
+
+    --radius: 0.75rem;
+
+    /* Semantic colors */
+    --success: 142 72% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 32 95% 44%;
+    --warning-foreground: 0 0% 100%;
+    --info: 200 98% 39%;
+    --info-foreground: 0 0% 100%;
+
+    /* Mint scale - Section 4.1.1 */
+    --mint-50: 166 76% 96%; /* #ECFEF9 */
+    --mint-100: 167 85% 89%; /* #CCFBF1 */
+    --mint-500: 174 72% 40%; /* #14B8A6 */
+    --mint-600: 175 81% 29%; /* #0D9488 */
+    --mint-700: 176 80% 24%; /* #0F766E */
+
+    /* Blue scale - Section 4.1.2 */
+    --blue-50: 204 100% 97%; /* #F0F9FF */
+    --blue-100: 204 94% 94%; /* #E0F2FE */
+    --blue-500: 199 89% 48%; /* #0EA5E9 */
+    --blue-600: 200 98% 39%; /* #0284C7 */
+    --blue-700: 201 96% 32%; /* #0369A1 */
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 174 72% 40%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 166 76% 96%;
+    --sidebar-accent-foreground: 176 80% 24%;
+    --sidebar-border: 213 27% 84%;
+    --sidebar-ring: 174 72% 40%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "SUIT Variable", sans-serif;
+  }
+}
+
+@layer utilities {
+  .container-app {
+    @apply mx-auto w-full px-4 md:px-6 lg:px-8;
+    max-width: 75rem;
+  }
+}
